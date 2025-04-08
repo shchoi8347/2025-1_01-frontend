@@ -1,6 +1,8 @@
 import './App.css';
 import Todo from './Todo';
 import React, {useState} from "react";
+import {List, Container, Paper} from "@mui/material";
+import AddTodo from './AddTodo'
 
 function App() {
   const [items, setItems] = useState([
@@ -15,12 +17,28 @@ function App() {
     }
   ]);
 
-  let todoItems =
-    items.length > 0 && items.map((item) => <Todo item={item} key={item.id} />);
-    
+  const addItem = (item) => {
+    item.id = "ID-" + items.length;
+    item.done = false;
+    setItems([...items, item]);
+    console.log("items: ", items);
+  }
+
+  let todoItems = items.length > 0 && 
+  <Paper style={{margin:16}}>
+    <List>
+      {items.map((item) => (
+        <Todo item={item} key={item.id} />    
+      ))};
+    </List>
+  </Paper>
   return (
-    <div>
-      {todoItems}
+    <div className="App">
+      <Container maxwidth="md">
+        <AddTodo addItem={addItem} />
+        <div className="TodoList">{todoItems}</div>
+      </Container>
+
     </div>
   );
 }
