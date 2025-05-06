@@ -13,11 +13,25 @@ export function call(api, method, request) {
     }
 
     return fetch(options.url, options).then((response) => {
+        console.log("csh: response status : " + response.status)
         if( response.status === 200 ) {
             return response.json();
+        } else if( response.status === 403) {
+            window.location.href = "/login";
+        } else {
+            Promise.reject(response);
+            throw Error(response);
         }
     }).catch((error) => {
         console.log("http error");
         console.log(error);
     });
+}
+
+export function signin(userDTO) {
+    return call("/auth/signin", "POST", userDTO) 
+        .then((response) => {
+            console.log("response: ", response);
+            alert("로그인 토큰: " + response.token);
+        });
 }
