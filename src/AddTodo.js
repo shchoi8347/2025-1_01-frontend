@@ -28,7 +28,7 @@ const AddTodo = (props) => {
                 <TextField placeholder="Add Todo here" fullWidth 
                 onChange={onInputChange} onKeyPress={enterKeyEventHandler} value={item.title} />
             </Grid>
-            <Grid xs={1} md={11} item>
+            <Grid xs={1} md={1} item>
                 <Button fullWidth style={{height: '100%'}} color="secondary" variant="contained"
                     onClick={onButtonClick}>
                     +

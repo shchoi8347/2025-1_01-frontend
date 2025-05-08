@@ -1,10 +1,18 @@
 import { API_BASE_URL } from "../app-config";
 
 export function call(api, method, request) {
+    let headers = new Headers( {
+        "Content-Type": "application/json"
+    });
+
+    const accessToken = localStorage.getItem("ACCESS_TOKEN");
+    if( accessToken && accessToken !== null ) {
+        headers.append("Authorization", "Bearer " + accessToken);
+    }
+
+
     let options = {
-        headers: new Headers({
-            "Content-Type": "application/json",
-        }),
+        headers: headers,
         url: API_BASE_URL + api,
         method: method,
     };
@@ -16,7 +24,7 @@ export function call(api, method, request) {
         console.log("csh: response status : " + response.status)
         if( response.status === 200 ) {
             return response.json();
-        } else if( response.status === 403) {
+        } else if( response.status === 403) { // forbidden이 리턴되면...
             window.location.href = "/login";
         } else {
             Promise.reject(response);
@@ -31,7 +39,17 @@ export function call(api, method, request) {
 export function signin(userDTO) {
     return call("/auth/signin", "POST", userDTO) 
         .then((response) => {
-            console.log("response: ", response);
-            alert("로그인 토큰: " + response.token);
+            //console.log("response: ", response);
+            //alert("로그인 토큰: " + response.token);
+            if( response.token) { // 로그인 성공하면
+                localStorage.setItem('ACCESS_TOKEN', response.token);
+                window.location.href = "/"; // 투두리스트페이지로 이동
+            }
         });
+}
+
+// 로그아웃 함수
+export function signout() {
+    localStorage.setItem("ACCESS_TOKEN", null);
+    window.location.href = "/login"
 }
